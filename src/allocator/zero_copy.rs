@@ -63,7 +63,7 @@ pub struct Loop {
     /// Number of threads per worker
     threads: usize,
     /// Tcp stream to read from / write to
-    stream: ::std::net::TcpStream,
+    stream: ::std::os::unix::net::UnixStream,
     /// Local endpoints to read from / write to
     remote_sendrecv: Vec<MergeQueue>,
     /// Function that makes a new logger for this thread
