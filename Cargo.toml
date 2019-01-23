@@ -5,7 +5,7 @@ authors = ["Andrea Lattuada <andrea.lattuada@inf.ethz.ch>"]
 
 [dependencies]
 getopts = { version = "0.2.14" }
-timely_logging = { git = "https://github.com/frankmcsherry/timely-dataflow", rev = "c3d0a44a60004ddc93ede38b38abd0015c1e843d" }
-timely_communication = { git = "https://github.com/frankmcsherry/timely-dataflow" , rev = "c3d0a44a60004ddc93ede38b38abd0015c1e843d" }
-timely = { git = "https://github.com/frankmcsherry/timely-dataflow", rev = "c3d0a44a60004ddc93ede38b38abd0015c1e843d" }
+timely_logging = { git = "https://github.com/frankmcsherry/timely-dataflow", tag = "v0.8.0" }
+timely_communication = { git = "https://github.com/frankmcsherry/timely-dataflow" , tag = "v0.8.0" }
+timely = { git = "https://github.com/frankmcsherry/timely-dataflow", tag = "v0.8.0" }
 libc = "^0.2"
