@@ -5,7 +5,7 @@ use timely_communication::networking::create_sockets;
 use timely_communication::allocator::zero_copy::bytes_exchange::{MergeQueue, Signal};
 use timely_communication::allocator::zero_copy::tcp::{send_loop, recv_loop};
 use timely_communication::allocator::zero_copy::allocator::{TcpBuilder, new_vector};
-use timely_communication::allocator::process::ProcessBuilder;
+use timely_communication::allocator::process::Process;
 
 /// Join handles for send and receive threads.
 ///
@@ -105,7 +105,7 @@ pub fn initialize_networking(
     noisy: bool,
     spawn_fn: Box<Fn(/* index: */ usize, /* sender: */ bool, /* remote: */ Option<usize>, Loop)->()+Send+Sync>,
     log_sender: Box<Fn(CommunicationSetup)->Option<Logger<CommunicationEvent, CommunicationSetup>>+Send+Sync>)
--> ::std::io::Result<(Vec<TcpBuilder<ProcessBuilder>>, CommsGuard)>
+-> ::std::io::Result<(Vec<TcpBuilder<Process>>, CommsGuard)>
 {
     let log_sender = Arc::new(log_sender);
     let processes = addresses.len();

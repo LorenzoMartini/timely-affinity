@@ -8,7 +8,7 @@ use std::sync::Arc;
 use std::any::Any;
 
 use timely_communication::allocator::{AllocateBuilder, Process, Generic, GenericBuilder};
-use timely_communication::allocator::thread::ThreadBuilder;
+use timely_communication::allocator::thread::Thread;
 use allocator::zero_copy::initialize_networking;
 
 use timely_communication::logging::{CommunicationSetup, CommunicationEvent};
@@ -100,7 +100,7 @@ impl Configuration {
     pub fn try_build(self) -> Result<(Vec<GenericBuilder>, Box<Any>), String> {
         match self {
             Configuration::Thread => {
-                Ok((vec![GenericBuilder::Thread(ThreadBuilder)], Box::new(())))
+                Ok((vec![GenericBuilder::Thread(Thread)], Box::new(())))
             },
             Configuration::Process(threads) => {
                 Ok((Process::new_vector(threads).into_iter().map(|x| GenericBuilder::Process(x)).collect(), Box::new(())))
