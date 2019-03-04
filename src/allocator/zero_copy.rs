@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 use timely_communication::networking::create_sockets;
-use timely_communication::allocator::zero_copy::bytes_exchange::{MergeQueue, Signal};
+use timely_communication::allocator::zero_copy::bytes_exchange::{MergeQueueProducer, MergeQueueConsumer, Signal};
 use timely_communication::allocator::zero_copy::tcp::{send_loop, recv_loop};
 use timely_communication::allocator::zero_copy::allocator::{TcpBuilder, new_vector};
 use timely_communication::allocator::process::ProcessBuilder;
@@ -65,7 +65,8 @@ pub struct Loop {
     /// Tcp stream to read from / write to
     stream: ::std::net::TcpStream,
     /// Local endpoints to read from / write to
-    remote_sendrecv: Vec<MergeQueue>,
+    remote_send: Option<Vec<MergeQueueProducer>>,
+    remote_recv: Option<Vec<MergeQueueConsumer>>,
     /// Function that makes a new logger for this thread
     log_sender: Arc<Box<Fn(CommunicationSetup)->Option<Logger<CommunicationEvent, CommunicationSetup>>+Send+Sync>>,
 }
@@ -81,14 +82,14 @@ impl Loop {
         match self.send_or_recv {
             SendOrRecv::Send(signal) => send_loop(
                 self.stream,
-                self.remote_sendrecv,
+                self.remote_recv.unwrap(),
                 signal,
                 self.my_index,
                 self.remote,
                 logger),
             SendOrRecv::Recv => recv_loop(
                 self.stream,
-                self.remote_sendrecv,
+                self.remote_send.unwrap(),
                 self.threads * self.my_index,
                 self.my_index,
                 self.remote,
@@ -142,7 +143,8 @@ pub fn initialize_networking(
                             send_or_recv: SendOrRecv::Send(signal),
                             remote: index,
                             stream,
-                            remote_sendrecv: remote_recv,
+                            remote_send: Option::None,
+                            remote_recv: Option::Some(remote_recv),
                             log_sender,
                         })
                     })?;
@@ -167,7 +169,8 @@ pub fn initialize_networking(
                             send_or_recv: SendOrRecv::Recv,
                             remote: index,
                             stream,
-                            remote_sendrecv: remote_send,
+                            remote_send: Option::Some(remote_send),
+                            remote_recv: Option::None,
                             log_sender,
                         })
                     })?;
